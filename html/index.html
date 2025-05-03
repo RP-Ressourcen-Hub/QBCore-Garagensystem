@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QBCore Garage System</title>
+    <link rel="stylesheet" href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body class="d-none">
+    <div class="container-fluid garage-container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h1 class="garage-title mb-3">FAHRZEUG-GARAGE</h1>
+                <div class="garage-subtitle mb-4">Legion Square Garage</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Kategorien -->
+            <div class="col-md-3">
+                <div class="card bg-dark mb-4 categories-card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Kategorien</h5>
+                    </div>
+                    <div class="card-body p-2">
+                        <div class="categories-list" id="categories-list">
+                            <!-- Kategorien werden dynamisch eingefügt -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card bg-dark mb-4 info-card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Fahrzeuginformationen</h5>
+                    </div>
+                    <div class="card-body vehicle-info d-none">
+                        <div class="info-item">
+                            <span class="info-label">Kennzeichen:</span>
+                            <span class="info-value" id="vehicle-plate">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Kraftstoff:</span>
+                            <div class="progress">
+                                <div class="progress-bar bg-success" id="vehicle-fuel" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Motor:</span>
+                            <div class="progress">
+                                <div class="progress-bar bg-info" id="vehicle-engine" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Karosserie:</span>
+                            <div class="progress">
+                                <div class="progress-bar bg-warning" id="vehicle-body" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Status:</span>
+                            <span class="info-value" id="vehicle-status">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Standort:</span>
+                            <span class="info-value" id="vehicle-location">-</span>
+                        </div>
+                    </div>
+                    <div class="card-body no-vehicle-selected">
+                        <p class="text-center text-muted">Kein Fahrzeug ausgewählt</p>
+                    </div>
+                </div>
+
+                <div class="card bg-dark action-card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Aktionen</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-primary btn-lg mb-2" id="spawn-vehicle">Fahrzeug auspaken</button>
+                            <button class="btn btn-success btn-lg mb-2" id="preview-vehicle">Vorschau</button>
+                            <button class="btn btn-info btn-lg mb-2" id="transfer-vehicle">Fahrzeug übertragen</button>
+                            <button class="btn btn-warning btn-lg" id="release-vehicle">Aus Beschlagnahme auslösen</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fahrzeugliste -->
+            <div class="col-md-9">
+                <div class="card bg-dark vehicle-list-card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">Meine Fahrzeuge</h5>
+                        <input type="text" class="form-control form-control-sm search-input" placeholder="Suchen..." id="vehicle-search">
+                    </div>
+                    <div class="card-body p-2">
+                        <div class="row vehicles-grid" id="vehicles-grid">
+                            <!-- Fahrzeuge werden dynamisch eingefügt -->
+                        </div>
+                        <div class="no-vehicles-message text-center p-5 d-none">
+                            <i class="fas fa-car fa-3x mb-3 text-muted"></i>
+                            <h4 class="text-muted">Keine Fahrzeuge gefunden</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transfer Modal -->
+    <div class="modal fade" id="transfer-modal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark">
+                <div class="modal-header">
+                    <h5 class="modal-title">Fahrzeug übertragen</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Wähle die Garage aus, zu der du dein Fahrzeug übertragen möchtest.</p>
+                    <div class="alert alert-info">
+                        Übertragungsgebühr: <span id="transfer-fee">1000</span>$
+                    </div>
+                    <select class="form-select" id="garage-select">
+                        <!-- Garagen werden dynamisch eingefügt -->
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
+                    <button type="button" class="btn btn-primary" id="confirm-transfer">Übertragen</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Impound Modal -->
+    <div class="modal fade" id="impound-modal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark">
+                <div class="modal-header">
+                    <h5 class="modal-title">Aus Beschlagnahme auslösen</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Bist du sicher, dass du dieses Fahrzeug aus der Beschlagnahme auslösen möchtest?</p>
+                    <div class="alert alert-warning">
+                        Auslösegebühr: <span id="impound-fee">5000</span>$
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
+                    <button type="button" class="btn btn-primary" id="confirm-release">Auslösen</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
